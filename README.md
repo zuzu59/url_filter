@@ -9,6 +9,8 @@ http://docs.mitmproxy.org/en/stable/
 
 https://github.com/mitmproxy/mitmproxy/tree/2.0.x/examples
 
+https://pypi.python.org/pypi/mitmproxy
+
 
 
 
