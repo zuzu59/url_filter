@@ -1,0 +1,121 @@
+    1  /vagrant/install_desktop_utils.sh 
+    2  apt install emacs
+    3  pip install mitmproxy
+    4  sudo apt install python3-pip
+    5  cd posturl/
+    6  virtualenv
+    7  virtualenv3
+    8  sudo apt install python-virtualenv
+    9  virtualenv -p python3 posturl-py3
+   10  . posturl-py3/bin/activate
+   11  pip install mitmproxy
+   12  sudo apt install build-essential 
+   13  sudo apt install python3-dev
+   14  x86_64-linux-gnu-gcc
+   15  sudo apt install ffi-dev
+   16  sudo apt install libffi-dev
+   17  pip install mitmproxy
+   18  sudo apt install libssl-dev
+   19  pip install mitmproxy
+   20  ls
+   21  emacs aProxy.py 
+   22  bg
+   23  chmod +x aProxy.py 
+   24  mitmproxy --help
+   25  mitmproxy
+   26  pip install typing
+   27  mitmproxy
+   28  pip freeze --local
+   29  pip uninstall mitmproxy
+   30  pip install mitmproxy
+   31  pip freeze --local
+   32  mitmproxy --help
+   33  mitmproxy
+   34  pip install contentviews
+   35  python --version
+   36  pip freeze --local
+   37  pip install mitmproxy==1.5.0
+   38  pip install mitmproxy==1.0.2
+   39  pip install mitmproxy==1.0.2 --disable-jpeg
+   40  apt instl
+   41  sudo apt install libjpeg-dev
+   42  pip install mitmproxy==1.0.2 --disable-jpeg
+   43  pip install mitmproxy==1.0.2 
+   44  pip uninstall mitmproxy
+   45  pip install mitmproxy==1.0.2 
+   46  mitmproxy -s aProxy.py
+   47  pip uninstall mitmproxy
+   48  pip install mitmproxy==0.18.2
+   49  sudo apt install libxml2-dev
+   50  pip install mitmproxy==0.18.2
+   51  pip uninstall mitmproxy
+   52  pip install mitmproxy==0.18.2
+   53  sudo apt install libxml-dev
+   54  sudo apt install libxml
+   55  sudo apt install libxmlsec1-dev
+   56  sudo apt install libxml-
+   57  pip uninstall mitmproxy
+   58  pip install mitmproxy==0.18.2
+   59  sudo apt install python-lxml
+   60  python --version
+   61  sudo apt install python3-lxml
+   62  pip uninstall mitmproxy
+   63  pip install mitmproxy==0.18.2
+   64  deactivate 
+   65  rm -rf posturl-py3/
+   66  virtualenv -p python3 posturl-py3
+   67  . posturl-py3/bin/activate
+   68  pip install mitmproxy==0.18.2
+   69  deactivate 
+   70  sudo add-apt-repository ppa:fkrull/deadsnakes
+   71  sudo apt-get update
+   72  sudo apt-get install python3.5
+   73  deactivate 
+   74  rm -rf posturl-py3/
+   75  virtualenv -p python3.5 posturl-3.5
+   76  . posturl-3.5/bin/activate
+   77  pip install mitmproxy
+   78  sudo apt-get install python3.5-dev 
+   79  pip install mitmproxy
+   80  ll
+   81  mitmproxy -s aProxy.py
+   82  pip install bs4
+   83  mitmproxy -s aProxy.py
+   84  mitmproxy -s aProxy.py http://zombo.com/
+   85  mitmproxy -s "aProxy.py http://zombo.com/"
+   86  mitmproxy -s "aProxy.py http://html5zombo.com/"
+   87  mitmproxy -s "aProxy.py"
+   88  cat aProxy.py
+   89  mitmproxy -s "aProxzy.py"
+   90  mitmproxy -s "aProxz.py"
+   91  mitmproxy -s "aProxy.py"
+   92  reset
+   93* pymitmproxy -s "aProxy.py"
+   94  python -c aProxy.py && mitmproxy -s "aProxy.py http://html5zombo.com/"
+   95  python aProxy.py && mitmproxy -s "aProxy.py http://html5zombo.com/"
+   96  cd 
+   97  git clone https://github.com/zuzu59/url_filter.git
+   98  ls
+   99  ls -al
+  100  cd posturl/
+  101  ls
+  102  mv * ../url_filter/
+  103  cd
+  104  cd posturl/
+  105  ls
+  106  cd
+  107  cd url_filter/
+  108  gst
+  109  cd
+  110  ls
+  111  cd
+  112  git clone https://github.com/zuzu59/deploy-proxmox.git
+  113  cd deploy-proxmox/
+  114  ls ins*
+  115  cat install_env_on_mac.sh 
+  116  ./install_env_on_mac.sh 
+  117  cd
+  118  cd url_filter/
+  119  gst
+  120  history 
+  121  history > history_des_commandes.txt
