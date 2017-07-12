@@ -1,10 +1,22 @@
 # url_filter
-Petit proxy qui permet d'enlever ou d'ajouter des 'choses' sur des pages WEB !
+
+Petit proxy permettant la manipulation du dom d'une page WEB.
 
 Très pratique quand on veut, lors d'une migartion de sites, les 'nettoyer' pour une comparaison visuelle plus facile en attendant d'avoir corrigé tous les bugs de la migration.
 
+# Installation
 
-# Sources:
+Ce logiciel necessite l'utilisation de python 3.
+
+Pour installer url_filter, il suffit de runner
+
+```
+pip3 install .
+```
+
+Dans le repository hostant le project url_filter.
+
+# References:
 
 https://mitmproxy.org/
 
