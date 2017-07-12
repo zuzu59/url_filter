@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 TEST_URL = 'http://test-web-wordpress.epfl.ch'
 SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2', 'search-2']
 
-class CorrectorProxy:
+class Filter:
     def response(self, flow):
         url = flow.request.url
         if url[len(url) - 1] == '/' or url[len(url)-5:] == '.html' or url[len(url)-4:] == '.jsp':
@@ -48,7 +48,7 @@ class CorrectorProxy:
             flow.response.content = str(html).encode('utf-8')
 
 def start():
-    return CorrectorProxy()
+    return Filter()
 
 if __name__ == '__main__':
     print("C'est ici qu'on peut mettre des tests unitaires!")
