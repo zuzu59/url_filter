@@ -1,13 +1,16 @@
 import collections
+import re
 
 from bs4 import BeautifulSoup
 
 TEST_URL = 'http://test-web-wordpress.epfl.ch'
 SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2', 'search-2']
+CSS_TO_MODIFY = ['style.css', 'stylisticss.grid.css']
 
 class Filter:
     def response(self, flow):
         url = flow.request.url
+        # Modifier le html pour filtrer les bugs
         if url[len(url) - 1] == '/' or url[len(url)-5:] == '.html' or url[len(url)-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
             # Modifications apportées aux nouvelles versions du site
@@ -42,10 +45,14 @@ class Filter:
                 for div in html.findAll('div', {'id' : 'footer'}):
                     div.extract()
 
-            # Modifications apportées aux deux versions du site
-
             # Mettre les changements dans la réponse
             flow.response.content = str(html).encode('utf-8')
+
+        # Modifier le .css pour enlever le mode résponsif
+        parts = url.split('/')
+        fileName = parts[len(parts) - 1].strip('/')
+        if '.css' in fileName:
+            flow.response.text = re.sub('@media screen and \(min-width: [0-9]*', '@media screen and (min-width: 1', flow.response.text)
 
 def start():
     return Filter()
