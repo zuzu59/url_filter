@@ -52,9 +52,17 @@ class Filter:
         parts = url.split('/')
         fileName = parts[-1].strip('/')
         if '.css' in fileName:
-            flow.response.text = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*', '@media screen and (min-width: 1', flow.response.text)
-            flow.response.text = re.sub('@media screen and \( ?max-width: ?\d+[.]?\d*', '@media screen and (max-width: 1', flow.response.text)
-            flow.response.text = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*[a-z]* ?\) and \( ?max-width: ?\d+[.]?[a-z]* ?\)', '@media screen and (min-width: 1em) and (max-width: 1em)', flow.response.text)
+            css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*', '@media screen and (min-width: 1', flow.response.text)
+            css_mod = re.sub('@media screen and \( ?max-width: ?\d+[.]?\d*', '@media screen and (max-width: 1', css_mod)
+            css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*[a-z]* ?\) and \( ?max-width: ?\d+[.]?[a-z]* ?\)', '@media screen and (min-width: 1em) and (max-width: 1em)', css_mod) 
+            # Modifier les couleurs en rouge (sans prendre les nuances de gris)
+            it = re.finditer('\#[a-f 0-9]{6}', css_mod)
+            for color in it:
+                pos = color.start()
+                # Si ce n'est pas une nuance de gris
+                if not ((css_mod[pos+1:pos+2] == css_mod[pos+3:pos+4]) and (css_mod[pos+3:pos+4] == css_mod[pos+5:pos+6])):
+                    css_mod = css_mod[:pos] + "#ae0010" + css_mod[pos + 7:]
+            flow.response.text = css_mod
 
 def start():
     return Filter()
