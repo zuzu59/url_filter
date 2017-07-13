@@ -1,7 +1,10 @@
 # url_filter
-Petit proxy qui permet de filtrer des 'choses' sur de pages WEB !
+Petit proxy qui permet d'enlever ou d'ajouter des 'choses' sur des pages WEB !
+
+Très pratique quand on veut, lors d'une migartion de sites, les 'nettoyer' pour une comparaison visuelle plus facile en attendant d'avoir corrigé tous les bugs de la migration.
 
 
+# Sources:
 
 https://mitmproxy.org/
 
