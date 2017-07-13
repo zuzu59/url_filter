@@ -39,6 +39,14 @@ class Filter:
                 for footer in html.findAll('footer', {'id' : 'colophon'}):
                     footer.extract()
 
+                # Supprimer la barre d'admin
+                for div in html.findAll('div', {'id' : 'wpadminbar'}):
+                    div.extract()
+
+                # Supprimer la marge du haut pour le corps du site causé par la barre d'admin
+                for style in html.findAll('style', {'media' : 'screen'}):
+                    style.extract()
+
             # Modifications apportées aux sites originaux
             else:
                 # Supprimer le footer du site
@@ -55,6 +63,7 @@ class Filter:
             css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*', '@media screen and (min-width: 1', flow.response.text)
             css_mod = re.sub('@media screen and \( ?max-width: ?\d+[.]?\d*', '@media screen and (max-width: 1', css_mod)
             css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*[a-z]* ?\) and \( ?max-width: ?\d+[.]?[a-z]* ?\)', '@media screen and (min-width: 1em) and (max-width: 1em)', css_mod) 
+            css_mod = css_mod.replace('.admin-bar .site-navigation-fixed.navigation-top', '.admin-bar')
             # Modifier les couleurs en rouge (sans prendre les nuances de gris)
             it = re.finditer('\#[a-f 0-9]{6}', css_mod)
             for color in it:
