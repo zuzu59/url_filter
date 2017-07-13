@@ -10,7 +10,7 @@ class Filter:
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
-        if url[len(url) - 1] == '/' or url[len(url)-5:] == '.html' or url[len(url)-4:] == '.jsp':
+        if url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
             # Modifications apportées aux nouvelles versions du site
             if TEST_URL in url and html is not None:
@@ -24,7 +24,7 @@ class Filter:
                 if aside is not None:
                     for section in aside.findAll('section'):
                         sectionId = section['id']
-                        if sectionId[:len(sectionId) - 2] == 'black-studio-tinymce':
+                        if sectionId[:-2] == 'black-studio-tinymce':
                             toSort[sectionId] = section.extract()
                     sortedSections = list(map(lambda x : x[1], sorted(toSort.items())))
                     for section in sortedSections:
@@ -50,7 +50,7 @@ class Filter:
 
         # Modifier le .css pour enlever le mode résponsif
         parts = url.split('/')
-        fileName = parts[len(parts) - 1].strip('/')
+        fileName = parts[-1].strip('/')
         if '.css' in fileName:
             flow.response.text = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*', '@media screen and (min-width: 1', flow.response.text)
             flow.response.text = re.sub('@media screen and \( ?max-width: ?\d+[.]?\d*', '@media screen and (max-width: 1', flow.response.text)
