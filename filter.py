@@ -52,7 +52,9 @@ class Filter:
         parts = url.split('/')
         fileName = parts[len(parts) - 1].strip('/')
         if '.css' in fileName:
-            flow.response.text = re.sub('@media screen and \(min-width: ?\d+[.]?\d*', '@media screen and (min-width: 1', flow.response.text)
+            flow.response.text = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*', '@media screen and (min-width: 1', flow.response.text)
+            flow.response.text = re.sub('@media screen and \( ?max-width: ?\d+[.]?\d*', '@media screen and (max-width: 1', flow.response.text)
+            flow.response.text = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*[a-z]* ?\) and \( ?max-width: ?\d+[.]?[a-z]* ?\)', '@media screen and (min-width: 1em) and (max-width: 1em)', flow.response.text)
 
 def start():
     return Filter()
