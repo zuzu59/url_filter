@@ -13,7 +13,7 @@ Ce script va lancer le proxy. Il faut ensuite mettre l'adresse de la machine et 
 
 Pour Firefox, il faut aller dans les paramètres avancés dans l'onglet "Réseau" puis les paramètres de la connexion. Dans la fenêtre qui s'ouvre, il faut choisir la configuration manuelle du proxy puis introduire l'adresse du proxy dans le champ "HTTP Proxy" et le port 8080 et cocher la case pour utiliser ce serveur proxy pour tous les protocoles puis appuyer sur OK.
 
-Ensuite, il faut installer un certificat pour que les connexions en HTTPs marchent. Pour cela, une fois que le proxy est configuré dans le navigateur, il faut aller [içi](https://mitm.it), choisir "Other" puis chosir de confirmer l'AC pour identifier les sites web.
+Ensuite, il faut installer un certificat pour que les connexions en HTTPs marchent. Pour cela, une fois que le proxy est configuré dans le navigateur, il faut aller [içi](http://mitm.it), choisir "Other" puis chosir de confirmer l'AC pour identifier les sites web.
 
 # Sources:
 
