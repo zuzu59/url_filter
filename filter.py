@@ -12,7 +12,6 @@ class Filter:
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
-        #if url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp':
         isText = False
         for header in flow.response.headers.items():
             for elem in header:
