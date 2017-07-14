@@ -9,4 +9,4 @@ setup(name='aProxy',
       author = 'sdf',
       url = 'http://github.com/sdf-epfl/url_filter',
       install_requires=['bs4', 'mitmproxy'],
-      scripts = ['aProxy.py'])
+      scripts = ['filter.py'])
