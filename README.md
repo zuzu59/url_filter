@@ -9,11 +9,11 @@ Très pratique quand on veut, lors d'une migartion de sites, les 'nettoyer' pour
 # Utilisation
 `/.start.sh`
 
-Ce script va lancer le proxy. Il faut ensuite mettre l'addresse de la machine et le port 8080 dans les paramètres proxy du navigateur web. 
+Ce script va lancer le proxy. Il faut ensuite mettre l'adresse de la machine et le port 8080 dans les paramètres proxy du navigateur web. 
 
 Pour Firefox, il faut aller dans les paramètres avancés dans l'onglet "Réseau" puis les paramètres de la connexion. Dans la fenêtre qui s'ouvre, il faut choisir la configuration manuelle du proxy puis introduire l'adresse du proxy dans le champ "HTTP Proxy" et le port 8080 et cocher la case pour utiliser ce serveur proxy pour tous les protocoles puis appuyer sur OK.
 
-Ensuite, il faut installer un certificat pour que les connexions en HTTPs marchent. Pour cela, il faut aller sur l'address `mitm.it` une fois que le proxy a été configuré dans le navigateur et suivre les instructions sur cette page.
+Ensuite, il faut installer un certificat pour que les connexions en HTTPs marchent. Pour cela, il faut aller sur l'adresse `mitm.it` une fois que le proxy a été configuré dans le navigateur et suivre les instructions sur cette page.
 
 # Sources:
 
