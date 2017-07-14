@@ -1,5 +1,7 @@
 import collections
 import re
+import os
+import errno
 
 from bs4 import BeautifulSoup
 from version import __version__
@@ -14,8 +16,14 @@ class Filter:
         # Modifier le html pour filtrer les bugs
         if url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
+
+            if not TEST_URL in url and html is not None:
+                Filter.remove_right_panel_color(html)
+
             # Modifications apportées aux nouvelles versions du site
             if TEST_URL in url and html is not None:
+
+
                 # Enlever la barre additionelle inutile des réseaux sociaux
                 for div in html.findAll('div', {'class' : 'addtoany_share_save_container addtoany_content_top'}):
                     div.extract()
@@ -85,6 +93,34 @@ class Filter:
                 if not ((css_mod[pos+1:pos+2] == css_mod[pos+3:pos+4]) and (css_mod[pos+3:pos+4] == css_mod[pos+5:pos+6])):
                     css_mod = css_mod[:pos] + "#ae0010" + css_mod[pos + 7:]
             flow.response.text = css_mod
+
+
+    def remove_right_panel_color(html):
+        for div in html.findAll('div', {'class' : 'right-col'}):
+            for box in div.findAll('div'):
+                box['class'].append('decolored')
+                for h3 in box.findAll('h3'):
+                    h3['class'] = 'decolored'
+                for li in box.findAll('li'):
+                    li['class'] = 'decolored'
+
+        decoloredBox = ''
+        try:
+            f = open('css/decoloredBox.css', 'r')
+            decoloredBox = f.read()
+        except IOError as ioex:
+            print ('No decoloredBox.css file found in css/')
+        
+        head = html.head
+        if head is not None:
+            new_link = html.new_tag('style')
+            new_link.append(decoloredBox)
+            head.append(new_link)
+
+
+
+
+
 
 def start():
     return Filter()
