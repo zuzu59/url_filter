@@ -12,7 +12,13 @@ class Filter:
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
-        if url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp':
+        #if url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp':
+        isText = False
+        for header in flow.response.headers.items():
+            for elem in header:
+                if 'text/html' in elem:
+                    isText = True
+        if isText or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
             # Modifications apportées aux nouvelles versions du site
             if TEST_URL in url and html is not None:
@@ -56,7 +62,6 @@ class Filter:
                     div.extract()
 
             # Mettre la version du proxy en haut de la page
-            print(flow.request.host)
             if html.body is not None and html.head is not None:
                 versionBar = html.new_tag('div', id='version-bar')
                 versionHeader = html.new_tag('p1', id='version-header')
