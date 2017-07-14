@@ -95,22 +95,25 @@ class Filter:
             flow.response.text = css_mod
 
 
-    def remove_right_panel_color(html):
+    def remove_right_panel_color_prev(html):
         for div in html.findAll('div', {'class' : 'right-col'}):
             for box in div.findAll('div'):
                 box['class'].append('decolored')
                 for h3 in box.findAll('h3'):
                     h3['class'] = 'decolored'
+                    Filter.remove_local_color_class(box, 'h3')
+                for strong in box.findAll('strong'):
+                    strong['class'] = 'decolored'
+                    Filter.remove_local_color_class(box, 'strong')
                 for li in box.findAll('li'):
                     li['class'] = 'decolored'
-
+                    Filter.remove_local_color_class(box, 'li')
         decoloredBox = ''
         try:
             f = open('css/decoloredBox.css', 'r')
             decoloredBox = f.read()
         except IOError as ioex:
             print ('No decoloredBox.css file found in css/')
-        
         head = html.head
         if head is not None:
             new_link = html.new_tag('style')
@@ -118,8 +121,26 @@ class Filter:
             head.append(new_link)
 
 
+    def remove_right_panel_color(html):
+        list tags = []
+        for div in html.findAll('div', {'class' : 'right-col'}):
+            for elem in div.findAll('div'):
+                if elem is not None:
+                    if elem.has_attr('class'):
+                        elem_class = elem['class']
+                        if 'local-color' in elem_class:
+                            elem['class'].remove['local-color']
 
 
+
+    def remove_local_color_class(parent, tag):
+        if parent is not None:
+            for elem in parent.findAll(tag): 
+                if elem is not None:
+                    if elem.has_attr('class'):
+                        elem_class = elem['class']
+                        if 'local-color' in elem_class:
+                            elem['class'].remove['local-color']
 
 
 def start():

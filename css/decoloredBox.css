@@ -1,4 +1,4 @@
-.local-color a, .tree li, .home-navpanel h3, .decolored {
+.local-color a, .tree li, .home-navpanel h3, .decolored, .tree li:hover {
     background-color: white;
     color: black;
 }
