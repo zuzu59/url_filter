@@ -14,7 +14,8 @@ class Filter:
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
-        if url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp':
+        if (url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp') and ORIG_URL in url:
+            print('Inside')
             html = BeautifulSoup(flow.response.content, 'html.parser')
 
             if not TEST_URL in url and html is not None:
@@ -95,23 +96,27 @@ class Filter:
             flow.response.text = css_mod
 
 
-    def remove_right_panel_color_prev(html):
+
+    def remove_right_panel_color(html):
+        tags = set()
         for div in html.findAll('div', {'class' : 'right-col'}):
-            for box in div.findAll('div'):
-                box['class'].append('decolored')
-                for h3 in box.findAll('h3'):
-                    h3['class'] = 'decolored'
-                    Filter.remove_local_color_class(box, 'h3')
-                for strong in box.findAll('strong'):
-                    strong['class'] = 'decolored'
-                    Filter.remove_local_color_class(box, 'strong')
-                for li in box.findAll('li'):
-                    li['class'] = 'decolored'
-                    Filter.remove_local_color_class(box, 'li')
+            for elem in div.findAll():
+                if elem is not None:
+                    tags.add(elem.name)
+                    if elem.has_attr('class'):
+                        elem['class'].append('decolored')
+                        elem_class = elem['class']
+                        if 'local-color' in elem_class:
+                            elem['class'].remove('local-color')
+                    else:
+                        elem['class'] = 'decolored'
+        print(tags)
         decoloredBox = ''
         try:
             f = open('css/decoloredBox.css', 'r')
             decoloredBox = f.read()
+            for tag in tags:
+                decoloredBox = tag + '.decolored, ' + decoloredBox
         except IOError as ioex:
             print ('No decoloredBox.css file found in css/')
         head = html.head
@@ -120,27 +125,6 @@ class Filter:
             new_link.append(decoloredBox)
             head.append(new_link)
 
-
-    def remove_right_panel_color(html):
-        list tags = []
-        for div in html.findAll('div', {'class' : 'right-col'}):
-            for elem in div.findAll('div'):
-                if elem is not None:
-                    if elem.has_attr('class'):
-                        elem_class = elem['class']
-                        if 'local-color' in elem_class:
-                            elem['class'].remove['local-color']
-
-
-
-    def remove_local_color_class(parent, tag):
-        if parent is not None:
-            for elem in parent.findAll(tag): 
-                if elem is not None:
-                    if elem.has_attr('class'):
-                        elem_class = elem['class']
-                        if 'local-color' in elem_class:
-                            elem['class'].remove['local-color']
 
 
 def start():
