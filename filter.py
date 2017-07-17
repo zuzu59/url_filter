@@ -15,7 +15,6 @@ class Filter:
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
         if (url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp') and ORIG_URL in url:
-            print('Inside')
             html = BeautifulSoup(flow.response.content, 'html.parser')
 
             if not TEST_URL in url and html is not None:
@@ -110,7 +109,6 @@ class Filter:
                             elem['class'].remove('local-color')
                     else:
                         elem['class'] = 'decolored'
-        print(tags)
         decoloredBox = ''
         try:
             f = open('css/decoloredBox.css', 'r')
