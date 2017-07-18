@@ -12,14 +12,22 @@ screen -list          pour lister tous les screen en fonctionement
 
 MAX_RAM=600
 
+function finish () {
+    kill -9 $(pgrep mitmdump) > /dev/null
+    echo "Arrêt"
+    exit
+}
+
+trap finish INT
+
 while [ 1 ];
 do 
 
 # Si mitmdump n'est pas lancé
 if ! pgrep mitmdump > /dev/null
 then
-    mitmdump -s ./filter.py & 
-    echo Mitmdump launched
+    mitmdump -s ./filter.py &
+    echo "Mitmdump allumé"
 fi 
 
 sleep 1
@@ -34,10 +42,9 @@ MEM_USED=$(($MEM_USED+0))
 if (( $MEM_USED > $MAX_RAM ))
 then
     kill -9 $(pgrep mitmdump) > /dev/null
-    echo Mitmdump killed
+    echo "Mitmdump arrêté"
 fi
 sleep 1
 done
-
-
+done
 
