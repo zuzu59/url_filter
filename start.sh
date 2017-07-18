@@ -21,6 +21,13 @@ then
     mitmdump -s ./filter.py & 
     echo Mitmdump launched
 fi 
+
+sleep 1
+if ! pgrep mitmdump > /dev/null
+then
+    echo "Erreur: Mitmdump n'a pas pu être lancé"
+    break
+fi 
 MEM_USED=$(free -h | grep Mem | awk '{print $3}' | awk '{print substr($1, 1, length($1)-1)}')
 MEM_USED=$(($MEM_USED+0))
 # Si la mémoire max est dépassée
