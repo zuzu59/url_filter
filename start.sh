@@ -20,14 +20,14 @@ if ! pgrep mitmdump > /dev/null
 then
     mitmdump -s ./filter.py & 
     echo Mitmdump launched
-else 
-    MEM_USED=$(free -h | grep Mem | awk '{print $2}' | awk '{print substr($1, 1, length($1)-1)}')
-    MEM_USED=$(($MEM_USED+0))
-    if [[ $MEM_USED > $MAX_RAM  ]] 
-    then
-        pkill $(pgrep mitmdump)
-        echo Mitmdump killed
-    fi
+fi 
+MEM_USED=$(free -h | grep Mem | awk '{print $3}' | awk '{print substr($1, 1, length($1)-1)}')
+MEM_USED=$(($MEM_USED+0))
+# Si la mémoire max est dépassée
+if (( $MEM_USED > $MAX_RAM ))
+then
+    kill -9 $(pgrep mitmdump) > /dev/null
+    echo Mitmdump killed
 fi
 sleep 1
 done
