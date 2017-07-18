@@ -1,5 +1,7 @@
 import collections
 import re
+import os
+import errno
 
 from bs4 import BeautifulSoup
 from version import __version__
@@ -19,8 +21,14 @@ class Filter:
                     isText = True
         if isText or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
+
+            if not TEST_URL in url and html:
+                self.remove_right_panel_color(html)
+
             # Modifications apportées aux nouvelles versions du site
-            if TEST_URL in url and html is not None:
+            if TEST_URL in url and html:
+
+
                 # Enlever la barre additionelle inutile des réseaux sociaux
                 for div in html.findAll('div', {'class' : 'addtoany_share_save_container addtoany_content_top'}):
                     div.extract()
@@ -92,6 +100,37 @@ class Filter:
                 if not ((css_mod[pos+1:pos+2] == css_mod[pos+3:pos+4]) and (css_mod[pos+3:pos+4] == css_mod[pos+5:pos+6])):
                     css_mod = css_mod[:pos] + "#ae0010" + css_mod[pos + 7:]
             flow.response.text = css_mod
+
+
+
+    def remove_right_panel_color(self, html):
+        tags = set()
+        for div in html.findAll('div', {'class' : 'right-col'}):
+            for elem in div.findAll():
+                if elem:
+                    tags.add(elem.name)
+                    if elem.has_attr('class'):
+                        elem['class'].append('decolored')
+                        elem_class = elem['class']
+                        if 'local-color' in elem_class:
+                            elem['class'].remove('local-color')
+                    else:
+                        elem['class'] = 'decolored'
+        decoloredBox = ''
+        try:
+            f = open('css/decoloredBox.css')
+            decoloredBox = f.read()
+            for tag in tags:
+                decoloredBox = tag + '.decolored, ' + decoloredBox
+        except IOError as ioex:
+            print ('No decoloredBox.css file found in css/')
+        head = html.head
+        if head:
+            new_link = html.new_tag('style')
+            new_link.append(decoloredBox)
+            head.append(new_link)
+
+
 
 def start():
     return Filter()
