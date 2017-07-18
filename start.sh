@@ -12,9 +12,7 @@ fi
 if [ -e "$1" ]
 then
     CMD=$(sed -n 2p $1)
-    echo $CMD
     CMD_NAME=$(echo $CMD | awk '{print $1}')
-    echo $CMD_NAME
 else
     echo Pas de fichier $1 
     exit
@@ -33,7 +31,7 @@ screen -list          pour lister tous les screen en fonctionement
 "
 
 function finish () {
-    kill -9 $(pgrep $CMD_NAME) > /dev/null
+    kill -9 $PID
     echo "Arrêt"
     exit
 }
@@ -47,11 +45,12 @@ do
 if ! pgrep $CMD_NAME > /dev/null
 then
     $CMD &
+    PID=$!
     echo "Mitmdump allumé"
 fi 
 
 sleep 1
-if ! pgrep $CMD_NAME > /dev/null
+if ! pgrep $CMD_NAME > /dev/null 
 then
     echo "Erreur: Mitmdump n'a pas pu être lancé"
     break
@@ -61,7 +60,7 @@ MEM_USED=$(($MEM_USED+0))
 # Si la mémoire max est dépassée
 if (( $MEM_USED > $MAX_RAM ))
 then
-    kill -9 $(pgrep $CMD_NAME) > /dev/null
+    kill -9 $PID
     echo "Mitmdump arrêté"
 fi
 sleep 1
