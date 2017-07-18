@@ -18,7 +18,7 @@ do
 # Si mitmdump n'est pas lancé
 if ! pgrep mitmdump > /dev/null
 then
-    mitmdump -p 8082 -s ./filter.py & 
+    mitmdump -s ./filter.py & 
     echo Mitmdump launched
 else 
     MEM_USED=$(free -h | grep Mem | awk '{print $2}' | awk '{print substr($1, 1, length($1)-1)}')

@@ -22,11 +22,11 @@ class Filter:
         if isText or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
 
-            if not TEST_URL in url and html is not None:
-                Filter.remove_right_panel_color(html)
+            if not TEST_URL in url and html:
+                self.remove_right_panel_color(html)
 
             # Modifications apportées aux nouvelles versions du site
-            if TEST_URL in url and html is not None:
+            if TEST_URL in url and html:
 
 
                 # Enlever la barre additionelle inutile des réseaux sociaux
@@ -103,11 +103,11 @@ class Filter:
 
 
 
-    def remove_right_panel_color(html):
+    def remove_right_panel_color(self, html):
         tags = set()
         for div in html.findAll('div', {'class' : 'right-col'}):
             for elem in div.findAll():
-                if elem is not None:
+                if elem:
                     tags.add(elem.name)
                     if elem.has_attr('class'):
                         elem['class'].append('decolored')
@@ -118,14 +118,14 @@ class Filter:
                         elem['class'] = 'decolored'
         decoloredBox = ''
         try:
-            f = open('css/decoloredBox.css', 'r')
+            f = open('css/decoloredBox.css')
             decoloredBox = f.read()
             for tag in tags:
                 decoloredBox = tag + '.decolored, ' + decoloredBox
         except IOError as ioex:
             print ('No decoloredBox.css file found in css/')
         head = html.head
-        if head is not None:
+        if head:
             new_link = html.new_tag('style')
             new_link.append(decoloredBox)
             head.append(new_link)
