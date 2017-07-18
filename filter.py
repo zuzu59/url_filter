@@ -2,7 +2,9 @@ import collections
 import re
 
 from bs4 import BeautifulSoup
+from version import __version__
 
+ORIG_URL = 'epfl.ch'
 TEST_URL = 'test-web-wordpress.epfl.ch'
 SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2', 'search-2']
 
@@ -53,6 +55,17 @@ class Filter:
                 for div in html.findAll('div', {'id' : 'footer'}):
                     div.extract()
 
+            # Mettre la version du proxy en haut de la page
+            print(flow.request.host)
+            if html.body is not None and html.head is not None:
+                versionBar = html.new_tag('div', id='version-bar')
+                versionHeader = html.new_tag('p1', id='version-header')
+                versionHeader.append("Version du proxy: " + __version__ + " url : " + flow.request.url)
+                versionStyle = html.new_tag('style')
+                versionStyle.append('#version-bar{background-color : #ae0010;}\n#version-header {padding-top : 0px; font-weight : 500; font-size : 13px; color : #ffffff}')
+                html.head.append(versionStyle)
+                versionBar.append(versionHeader)
+                html.body.insert(0, versionBar)
             # Mettre les changements dans la réponse
             flow.response.content = str(html).encode('utf-8')
 
