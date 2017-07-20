@@ -11,6 +11,27 @@ TEST_URL = 'test-web-wordpress.epfl.ch'
 SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2', 'search-2']
 
 class Filter:
+
+    def downloadCookie(self, url):
+        log, pwd = getCredentials(url) 
+        siteName = '' 
+        if log and pwd:
+            userAgent = 'Mozilla/5.0'
+            saveCookies = 'data/cookies/' + siteName + '-cookie'
+            postData = 'log=' + log + '&pwd=' + pwd + '&testcookie=1'
+            command = ('wget --user-agent=' + userAgent + 
+                        ' --save-cookie ' + saveCookies +
+                        ' --keep-session-cookies' + 
+                        ' --delete-after' + 
+                        '--post-data=log' + log + '&pwd=' + pwd + '&testcookie=1 ' +
+                        url)
+            os.system(command)
+
+    def getCredentials(self, url):
+        return (None, None)
+
+
+
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
