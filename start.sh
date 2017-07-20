@@ -13,6 +13,7 @@ if [ -e "$1" ]
 then
     CMD=$(sed -n 2p $1)
     CMD_NAME=$(echo $CMD | awk '{print $1}')
+    echo "Name: "$CMD_NAME
 else
     echo Pas de fichier $1 
     exit
@@ -31,9 +32,12 @@ screen -list          pour lister tous les screen en fonctionement
 "
 
 function finish () {
+if pgrep $CMD_NAME > /dev/null
+then
     kill -9 $PID
-    echo "Arrêt"
-    exit
+fi
+echo "Arrêt de " $CMD_NAME
+exit
 }
 
 trap finish INT
@@ -45,8 +49,8 @@ do
 if ! pgrep $CMD_NAME > /dev/null
 then
     $CMD &
-    PID=$!
-    echo "Mitmdump allumé"
+    PID=$(pgrep $CMD_NAME)
+    echo $CMD_NAME"  allumé"
 fi 
 
 sleep 1
@@ -61,9 +65,10 @@ MEM_USED=$(($MEM_USED+0))
 if (( $MEM_USED > $MAX_RAM ))
 then
     kill -9 $PID
-    echo "Mitmdump arrêté"
+    wait $PID &> /dev/null
+    echo $CMD_NAME" arrété"  
 fi
-sleep 1
+sleep 2
 done
 done
 
