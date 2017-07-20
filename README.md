@@ -1,9 +1,14 @@
 # url_filter
-Petit proxy qui permet d'enlever ou d'ajouter des 'choses' sur des pages WEB !
+
+Petit proxy permettant la manipulation du dom d'une page WEB.
 
 Très pratique quand on veut, lors d'une migartion de sites, les 'nettoyer' pour une comparaison visuelle plus facile en attendant d'avoir corrigé tous les bugs de la migration.
 
 # Installation
+
+Ce logiciel necessite l'utilisation de python 3.
+
+Pour installer url_filter, il suffit de runner
 `./install.sh`
 
 # Utilisation
@@ -15,7 +20,7 @@ Pour Firefox, il faut aller dans les paramètres avancés dans l'onglet "Réseau
 
 Ensuite, il faut installer un certificat pour que les connexions en HTTPs marchent. Pour cela, une fois que le proxy est configuré dans le navigateur, il faut aller [içi](http://mitm.it), choisir "Other" puis chosir de confirmer l'AC pour identifier les sites web.
 
-# Sources:
+# References:
 
 https://mitmproxy.org/
 
