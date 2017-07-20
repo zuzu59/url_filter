@@ -1,5 +1,7 @@
 import collections
 import re
+import os
+import errno
 
 from bs4 import BeautifulSoup
 from version import __version__
@@ -12,10 +14,21 @@ class Filter:
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
-        if url[-1] == '/' or url[-5:] == '.html' or url[-4:] == '.jsp':
+        isText = False
+        for header in flow.response.headers.items():
+            for elem in header:
+                if 'text/html' in elem:
+                    isText = True
+        if isText or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
+
+            if not TEST_URL in url and html:
+                self.remove_right_panel_color(html)
+
             # Modifications apportées aux nouvelles versions du site
-            if TEST_URL in url and html is not None:
+            if TEST_URL in url and html:
+
+
                 # Enlever la barre additionelle inutile des réseaux sociaux
                 for div in html.findAll('div', {'class' : 'addtoany_share_save_container addtoany_content_top'}):
                     div.extract()
@@ -56,13 +69,15 @@ class Filter:
                     div.extract()
 
             # Mettre la version du proxy en haut de la page
-            print(flow.request.host)
             if html.body is not None and html.head is not None:
                 versionBar = html.new_tag('div', id='version-bar')
                 versionHeader = html.new_tag('p1', id='version-header')
-                versionHeader.append("Version du proxy: " + __version__ + " url : " + flow.request.url)
+                versionHeader.append("Ver: " + __version__)
+                versionLink = html.new_tag('a', id='version-link', href=flow.request.url)
+                versionLink.append(flow.request.url)
+                versionHeader.append(versionLink)
                 versionStyle = html.new_tag('style')
-                versionStyle.append('#version-bar{background-color : #ae0010;}\n#version-header {padding-top : 0px; font-weight : 500; font-size : 13px; color : #ffffff}')
+                versionStyle.append('#version-bar{background-color : #ae0010;}\n#version-header, #version-link {padding-top : 0px; font-weight : 500; font-family : Arial; font-size : 15px; color : #ffffff}\n#version-link {padding-left : 1em}')
                 html.head.append(versionStyle)
                 versionBar.append(versionHeader)
                 html.body.insert(0, versionBar)
@@ -85,6 +100,37 @@ class Filter:
                 if not ((css_mod[pos+1:pos+2] == css_mod[pos+3:pos+4]) and (css_mod[pos+3:pos+4] == css_mod[pos+5:pos+6])):
                     css_mod = css_mod[:pos] + "#ae0010" + css_mod[pos + 7:]
             flow.response.text = css_mod
+
+
+
+    def remove_right_panel_color(self, html):
+        tags = set()
+        for div in html.findAll('div', {'class' : 'right-col'}):
+            for elem in div.findAll():
+                if elem:
+                    tags.add(elem.name)
+                    if elem.has_attr('class'):
+                        elem['class'].append('decolored')
+                        elem_class = elem['class']
+                        if 'local-color' in elem_class:
+                            elem['class'].remove('local-color')
+                    else:
+                        elem['class'] = 'decolored'
+        decoloredBox = ''
+        try:
+            f = open('css/decoloredBox.css')
+            decoloredBox = f.read()
+            for tag in tags:
+                decoloredBox = tag + '.decolored, ' + decoloredBox
+        except IOError as ioex:
+            print ('No decoloredBox.css file found in css/')
+        head = html.head
+        if head:
+            new_link = html.new_tag('style')
+            new_link.append(decoloredBox)
+            head.append(new_link)
+
+
 
 def start():
     return Filter()
