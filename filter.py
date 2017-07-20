@@ -12,26 +12,57 @@ SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2
 
 class Filter:
 
-    def downloadCookie(self, url):
-        log, pwd = getCredentials(url) 
-        siteName = '' 
+    
+    def getCredentials(url):
+        test = ''
+        try:
+            f = open('../credentials/test')
+            test = f.read()
+        except IOError as ioex:
+            print ('No credentials')
+        credentials = [test.split('\t')[0] for i in test] 
+        log = credentials[0]
+        pwd = credentials[1]
+        return (log, pwd)
+
+
+    def downloadCookie(url, name):
+        log, pwd = Filter.getCredentials(url) 
         if log and pwd:
             userAgent = 'Mozilla/5.0'
-            saveCookies = 'data/cookies/' + siteName + '-cookie'
+            saveCookies = 'data/cookies/' + name + '-cookie'
             postData = 'log=' + log + '&pwd=' + pwd + '&testcookie=1'
             command = ('wget --user-agent=' + userAgent + 
                         ' --save-cookie ' + saveCookies +
                         ' --keep-session-cookies' + 
                         ' --delete-after' + 
-                        '--post-data=log' + log + '&pwd=' + pwd + '&testcookie=1 ' +
+                        ' --post-data=log"' + log + '&pwd=' + pwd + '&testcookie=1" ' +
                         url)
+            print(command)
             os.system(command)
 
-    def getCredentials(self, url):
-        return (None, None)
+    # Permet de récupérer le cookie de l'url sous forme de string
+    def getCookie(url, path):
+        cookie = ''
+        indexName=0
+        for i in range (len(url)):
+            if url[i] == '/':
+                indexName=i
+        name=url[indexName+1:]
+        if os.path.exists(path+'/'+name):
+            try:
+                f = open(path)
+                cookie = f.read()
+            except IOError as ioex:
+                print ('Erreur ouverture cookie')
+        else:
+            Filter.downloadCookie(url, name, path)
+        
+        print(url[indexName+1:])
+        return cookie
+        
 
-
-
+    
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
@@ -141,7 +172,7 @@ class Filter:
                         elem['class'] = 'decolored'
         decoloredBox = ''
         try:
-            f = open('css/decoloredBox.css')
+            f = open('data/:css/decoloredBox.css')
             decoloredBox = f.read()
             for tag in tags:
                 decoloredBox = tag + '.decolored, ' + decoloredBox
@@ -160,3 +191,7 @@ def start():
 
 if __name__ == '__main__':
     print("C'est ici qu'on peut mettre des tests unitaires!")
+    url = 'http://test-web-wordpress.epfl.ch/v1-testwp/briskenlab'
+    path = 'data/cookies'
+    #Filter.downloadCookie(url)
+    Filter.getCookie(url, path)
