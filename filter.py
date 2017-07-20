@@ -19,6 +19,8 @@ class Filter:
             for elem in header:
                 if 'text/html' in elem:
                     isText = True
+        if 'x-frame-options' in flow.response.headers:
+            del flow.response.headers['x-frame-options']
         if isText or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
 
