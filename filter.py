@@ -34,7 +34,7 @@ class Filter:
                 # Enlever la barre additionelle inutile des réseaux sociaux
                 for div in html.findAll('div', {'class' : 'addtoany_share_save_container addtoany_content_top'}):
                     div.extract()
-                
+
                 # Retrier les elements dans la barre de droite
                 aside = html.find('aside' , {'id' : 'secondary'})
                 toSort = {}
@@ -83,6 +83,20 @@ class Filter:
                 html.head.append(versionStyle)
                 versionBar.append(versionHeader)
                 html.body.insert(0, versionBar)
+                script = html.new_tag('script')
+                script.append('var just_scrolled = false;')
+                script.append('function reset_scroll() { just_scrolled = false; }')
+                script.append('function receiveMessage(event) { scroll_value = event.data; window.scrollTo(0, scroll_value); }')
+                script.append('window.addEventListener("message", receiveMessage, false);')
+                script.append('window.onscroll = function(e) { \
+                              if (just_scrolled) { \
+                                return; \
+                              } else { \
+                                just_scrolled = true; \
+                                window.parent.postMessage(window.scrollY, "*"); \
+                                setTimeout(reset_scroll, 50); \
+                              }};')
+                html.body.insert(0, script)
             # Mettre les changements dans la réponse
             flow.response.content = str(html).encode('utf-8')
 
@@ -92,7 +106,7 @@ class Filter:
         if '.css' in fileName:
             css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*', '@media screen and (min-width: 1', flow.response.text)
             css_mod = re.sub('@media screen and \( ?max-width: ?\d+[.]?\d*', '@media screen and (max-width: 1', css_mod)
-            css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*[a-z]* ?\) and \( ?max-width: ?\d+[.]?[a-z]* ?\)', '@media screen and (min-width: 1em) and (max-width: 1em)', css_mod) 
+            css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*[a-z]* ?\) and \( ?max-width: ?\d+[.]?[a-z]* ?\)', '@media screen and (min-width: 1em) and (max-width: 1em)', css_mod)
             css_mod = css_mod.replace('.admin-bar .site-navigation-fixed.navigation-top', '.admin-bar')
             # Modifier les couleurs en rouge (sans prendre les nuances de gris)
             it = re.finditer('\#[a-f 0-9]{6}', css_mod)
