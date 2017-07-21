@@ -79,7 +79,7 @@ class Filter:
                 versionLink.append(flow.request.url)
                 versionHeader.append(versionLink)
                 versionStyle = html.new_tag('style')
-                versionStyle.append('#version-bar{background-color : #ae0010;}\n#version-header, #version-link {padding-top : 0px; font-weight : 500; font-family : Arial; font-size : 15px; color : #ffffff}\n#version-link {padding-left : 1em}')
+                versionStyle.append('#version-bar{background-color: #555555; position:sticky; top:1px; z-index:1000000}\n#version-header, #version-link {padding-top : 0px; font-weight : 500; font-family : Arial; font-size : 15px; color : #ffffff}\n#version-link {padding-left : 1em}')
                 html.head.append(versionStyle)
                 versionBar.append(versionHeader)
                 html.body.insert(0, versionBar)
