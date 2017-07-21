@@ -9,7 +9,12 @@ from version import __version__
 
 ORIG_URL = 'epfl.ch'
 TEST_URL = 'test-web-wordpress.epfl.ch'
+V_TEST_URL = 'v1-testwp'
+WP_URL = TEST_URL + '/' + V_TEST_URL
 SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2', 'search-2']
+
+COOKIE_FOLDER = 'data/cookies'
+CREDENTIALS_FILE = '../credentials/credentials.csv'
 
 class Filter:
 
@@ -45,27 +50,46 @@ class Filter:
             os.system(command)
 
     # Permet de récupérer le cookie de l'url sous forme de string
-    def getCookie(url, cookieFoldPath, credFilePath):
-        cookie = ''
-        indexName=0
-        # Trouve le nom du site web
-        for i in range (len(url)):
-            if url[i] == '/':
-                indexName=i
-        name=url[indexName+1:]
+    def getCookie(url, name, cookieFoldPath, credFilePath):
         # Vérifie si le cookie existe 
-        if os.path.exists(cookieFoldPath+'/'+name):
+        if os.path.exists(cookieFoldPath + '/'+ name + '_cookie'):
             try:
-                f = open(path)
+                f = open(cookieFoldPath + '/' + name + '_cookie')
                 cookie = f.read()
+                f.close()
             except IOError as ioex:
                 print ('Erreur ouverture cookie')
         else:
             Filter.downloadCookie(url, name, cookieFoldPath, credFilePath)
         return cookie
-        
-
     
+    def request(self, flow):
+        url = flow.request.url
+        # Regarde si bien sur wordpress
+        if WP_URL in url:
+            name = url.rsplit(WP_URL + '/', 1)[1]
+            name = name.split('/')[0]
+            # Regarde si le cookie existe et si oui le prend
+            cookie = Filter.getCookie(url, name, COOKIE_FOLDER, CREDENTIALS_FILE)
+            if cookie:
+                cookie = cookie.splitlines()[-2:]
+                part1 = cookie[0].split('\t')[-2:]
+                part2 = cookie[1].split('\t')[-2:]
+                #del flow.request.headers['cookie']
+                #print(str(flow.request.headers))
+                #flow.request.headers['cookie'] =    (part1[0] + '=' + part1[1] + '; ' +
+                #                                    part2[0] + '=' + part2[1])
+
+                print(str(flow.request.content))
+                #for string in cookie:
+                #    if string:
+                #        if string[0] != '#' and string[0] != ' ':
+                #            print(string)
+                #if 'cookie' in flow.request.headers:
+                #    flow.request.headers['cookie'] = 'jasldfkjasldkfjl'
+            print('\n\n' + str(flow.request.headers) + '\n\n')
+
+
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
@@ -175,7 +199,7 @@ class Filter:
                         elem['class'] = 'decolored'
         decoloredBox = ''
         try:
-            f = open('data/:css/decoloredBox.css')
+            f = open('data/css/decoloredBox.css')
             decoloredBox = f.read()
             for tag in tags:
                 decoloredBox = tag + '.decolored, ' + decoloredBox
@@ -194,8 +218,6 @@ def start():
 
 if __name__ == '__main__':
     url1 = 'http://test-web-wordpress.epfl.ch/v1-testwp/briskenlab'
-    url2 = 'http://test-web-wordpress.epfl.ch/v1-testwp/gr-co'
     cookieFoldPath = 'data/cookies'
     credFilePath = '../credentials/credentials.csv'
-    Filter.getCookie(url1, cookieFoldPath, credFilePath)
-    Filter.getCookie(url2, cookieFoldPath, credFilePath)
+    print(Filter.getCookie(url1, cookieFoldPath, credFilePath))
