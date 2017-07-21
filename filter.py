@@ -2,6 +2,7 @@ import collections
 import re
 import os
 import errno
+import csv
 
 from bs4 import BeautifulSoup
 from version import __version__
@@ -12,25 +13,27 @@ SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2
 
 class Filter:
 
-    
-    def getCredentials(url):
-        test = ''
+    # Récupère le username et le mot de passe pour le site
+    def getCredentials(name, credFilePath):
+        log = pwd = ''
         try:
-            f = open('../credentials/test')
-            test = f.read()
+            f = open(credFilePath)
+            reader = csv.reader(f)
+            for row in reader:
+                if row[0] == name:
+                    log = row[8]
+                    pwd = row[9]
+            f.close()
         except IOError as ioex:
             print ('No credentials')
-        credentials = [test.split('\t')[0] for i in test] 
-        log = credentials[0]
-        pwd = credentials[1]
         return (log, pwd)
 
-
-    def downloadCookie(url, name):
-        log, pwd = Filter.getCredentials(url) 
+    # Télécharge le cookie pour s'identifier
+    def downloadCookie(url, name, cookieFoldPath, credFilePath):
+        log, pwd = Filter.getCredentials(name, credFilePath) 
         if log and pwd:
             userAgent = 'Mozilla/5.0'
-            saveCookies = 'data/cookies/' + name + '-cookie'
+            saveCookies = cookieFoldPath + '/' + name + '_cookie'
             postData = 'log=' + log + '&pwd=' + pwd + '&testcookie=1'
             command = ('wget --user-agent=' + userAgent + 
                         ' --save-cookie ' + saveCookies +
@@ -42,23 +45,23 @@ class Filter:
             os.system(command)
 
     # Permet de récupérer le cookie de l'url sous forme de string
-    def getCookie(url, path):
+    def getCookie(url, cookieFoldPath, credFilePath):
         cookie = ''
         indexName=0
+        # Trouve le nom du site web
         for i in range (len(url)):
             if url[i] == '/':
                 indexName=i
         name=url[indexName+1:]
-        if os.path.exists(path+'/'+name):
+        # Vérifie si le cookie existe 
+        if os.path.exists(cookieFoldPath+'/'+name):
             try:
                 f = open(path)
                 cookie = f.read()
             except IOError as ioex:
                 print ('Erreur ouverture cookie')
         else:
-            Filter.downloadCookie(url, name, path)
-        
-        print(url[indexName+1:])
+            Filter.downloadCookie(url, name, cookieFoldPath, credFilePath)
         return cookie
         
 
@@ -190,8 +193,9 @@ def start():
     return Filter()
 
 if __name__ == '__main__':
-    print("C'est ici qu'on peut mettre des tests unitaires!")
-    url = 'http://test-web-wordpress.epfl.ch/v1-testwp/briskenlab'
-    path = 'data/cookies'
-    #Filter.downloadCookie(url)
-    Filter.getCookie(url, path)
+    url1 = 'http://test-web-wordpress.epfl.ch/v1-testwp/briskenlab'
+    url2 = 'http://test-web-wordpress.epfl.ch/v1-testwp/gr-co'
+    cookieFoldPath = 'data/cookies'
+    credFilePath = '../credentials/credentials.csv'
+    Filter.getCookie(url1, cookieFoldPath, credFilePath)
+    Filter.getCookie(url2, cookieFoldPath, credFilePath)
