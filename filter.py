@@ -105,10 +105,8 @@ class Filter:
             if WP_URL in url:
                 name = url.rsplit(WP_URL + '/', 1)[1]
                 name = name.split('/')[0]
-                                                                       
                 log, pwd =  Filter.getCredentials(name, CREDENTIALS_FILE)
                 print((log, pwd))
-                                                                       
                 for inputTag in html.findAll('input'):
                     if inputTag and inputTag.has_attr('id'):
                         if inputTag['id'] == 'user_login':
@@ -119,7 +117,6 @@ class Filter:
                             print(inputTag)
                         if inputTag['id'] == 'user_pass':
                             inputTag['value'] = pwd
-
 
             if not TEST_URL in url and html:
                 self.remove_right_panel_color(html)
