@@ -77,17 +77,12 @@ class Filter:
                 part2 = cookie[1].split('\t')[-2:]
                 #del flow.request.headers['cookie']
                 #print(str(flow.request.headers))
-                #flow.request.headers['cookie'] =    (part1[0] + '=' + part1[1] + '; ' +
-                #                                    part2[0] + '=' + part2[1])
-
-                print(str(flow.request.content))
-                #for string in cookie:
-                #    if string:
-                #        if string[0] != '#' and string[0] != ' ':
-                #            print(string)
-                #if 'cookie' in flow.request.headers:
-                #    flow.request.headers['cookie'] = 'jasldfkjasldkfjl'
-            print('\n\n' + str(flow.request.headers) + '\n\n')
+                cookie =    (part1[0] + '=' + part1[1] + '; ' +
+                                                    part2[0] + '=' + part2[1])
+                cookie = str.encode(cookie)
+                nCookie = str.encode('Cookie')
+                flow.request.headers.set_all('Cookie', (nCookie,cookie))
+            #print('\n\n' + str(flow.request.headers) + '\n\n')
 
 
     def response(self, flow):
