@@ -120,12 +120,12 @@ class Filter:
                         elem['class'] = 'decolored'
         decoloredBox = ''
         try:
-            f = open('css/decoloredBox.css')
+            f = open('data/css/decoloredBox.css')
             decoloredBox = f.read()
             for tag in tags:
                 decoloredBox = tag + '.decolored, ' + decoloredBox
         except IOError as ioex:
-            print ('No decoloredBox.css file found in css/')
+            print ('No decoloredBox.css file found in data/css/')
         head = html.head
         if head:
             new_link = html.new_tag('style')
