@@ -200,24 +200,6 @@ class Filter:
                     css_mod = css_mod[:pos] + "#ae0010" + css_mod[pos + 7:]
             flow.response.text = css_mod
 
-        
-        
-        
- 
-        
-
-        
-        
-        
-        
-        
-        
-
-        
-        
-        
-
-
     def remove_right_panel_color(self, html):
         tags = set()
         for div in html.findAll('div', {'class' : 'right-col'}):
