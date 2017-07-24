@@ -12,6 +12,7 @@ TEST_URL = 'test-web-wordpress.epfl.ch'
 V_TEST_URL = 'v1-testwp'
 WP_URL = TEST_URL + '/' + V_TEST_URL
 SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2', 'search-2']
+LOGIN = 'wp-login.php'
 
 COOKIE_FOLDER = 'data/cookies'
 CREDENTIALS_FILE = '../credentials/credentials.csv'
@@ -71,18 +72,21 @@ class Filter:
             name = name.split('/')[0]
             # Regarde si le cookie existe et si oui le prend
             cookie = Filter.getCookie(url, name, COOKIE_FOLDER, CREDENTIALS_FILE)
-            if cookie:
-                cookie = cookie.splitlines()[-2:]
-                part1 = cookie[0].split('\t')[-2:]
-                part2 = cookie[1].split('\t')[-2:]
-                #del flow.request.headers['cookie']
-                #print(str(flow.request.headers))
-                cookie =    (part1[0] + '=' + part1[1] + '; ' +
-                                                    part2[0] + '=' + part2[1])
-                cookie = str.encode(cookie)
-                nCookie = str.encode('Cookie')
-                flow.request.headers.set_all('Cookie', (nCookie,cookie))
-            #print('\n\n' + str(flow.request.headers) + '\n\n')
+           # if cookie:
+           #     cookie = cookie.splitlines()[-2:]
+           #     part1 = cookie[0].split('\t')[-2:]
+           #     part2 = cookie[1].split('\t')[-2:]
+           #     #del flow.request.headers['cookie']
+           #     #print(str(flow.request.headers))
+           #     cookie =    (part1[0] + '=' + part1[1] + '; ' +
+           #                                         part2[0] + '=' + part2[1])
+
+           #     cookie = str.encode('wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_613e00c83c2151b4bb94a3f4022fe465=view-briskenlab%7C1501057069%7C48Sh7ihIhbs1sFLyxIiBfWG0yWZM82kOsKzHvNsiWbJ%7C705dbe07578a23a3b8529646a757d9b333c3d117b0aba5a20feeeec97b32dcd8; login_unique=f1a1e9f9d89030671c8001529198ca4b')
+           #    # cookie = str.encode(cookie)
+           #     nCookie = str.encode('Cookie')
+           #     flow.request.headers.set_all('Cookie', (nCookie,cookie))
+           # print('\n\n' + str(flow.request.headers) + '\n\n')
+
 
 
     def response(self, flow):
@@ -97,6 +101,24 @@ class Filter:
             del flow.response.headers['x-frame-options']
         if isText or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
+            # Fill the website with credentials
+            if WP_URL in url:
+                name = url.rsplit(WP_URL + '/', 1)[1]
+                name = name.split('/')[0]
+                                                                       
+                log, pwd =  Filter.getCredentials(name, CREDENTIALS_FILE)
+                                                                       
+                for inputTag in html.findAll('input'):
+                    if inputTag and inputTag.has_attr('id'):
+                        if inputTag['id'] == 'user_login':
+                            inputTag['lasdjf'] = 'alskdjf'
+                            print(log)
+                            inputTag['value'] = log
+                                                                       
+                            print(inputTag)
+                        if inputTag['id'] == 'user_pass':
+                            inputTag['value'] = pwd
+
 
             if not TEST_URL in url and html:
                 self.remove_right_panel_color(html)
@@ -177,6 +199,22 @@ class Filter:
                     css_mod = css_mod[:pos] + "#ae0010" + css_mod[pos + 7:]
             flow.response.text = css_mod
 
+        
+        
+        
+ 
+        
+
+        
+        
+        
+        
+        
+        
+
+        
+        
+        
 
 
     def remove_right_panel_color(self, html):
