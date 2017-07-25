@@ -65,31 +65,6 @@ class Filter:
         else:
             Filter.downloadCookie(url, name, cookieFoldPath, credFilePath)
         return cookie
-    
-    def request(self, flow):
-        url = flow.request.url
-        # Regarde si bien sur wordpress
-       # if WP_URL in url:
-       #     name = url.rsplit(WP_URL + '/', 1)[1]
-       #     name = name.split('/')[0]
-       #     # Regarde si le cookie existe et si oui le prend
-       #     cookie = Filter.getCookie(url, name, COOKIE_FOLDER, CREDENTIALS_FILE)
-       #    # if cookie:
-       #    #     cookie = cookie.splitlines()[-2:]
-       #    #     part1 = cookie[0].split('\t')[-2:]
-       #    #     part2 = cookie[1].split('\t')[-2:]
-       #    #     #del flow.request.headers['cookie']
-       #    #     #print(str(flow.request.headers))
-       #    #     cookie =    (part1[0] + '=' + part1[1] + '; ' +
-       #    #                                         part2[0] + '=' + part2[1])
-
-       #    #     cookie = str.encode('wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_613e00c83c2151b4bb94a3f4022fe465=view-briskenlab%7C1501057069%7C48Sh7ihIhbs1sFLyxIiBfWG0yWZM82kOsKzHvNsiWbJ%7C705dbe07578a23a3b8529646a757d9b333c3d117b0aba5a20feeeec97b32dcd8; login_unique=f1a1e9f9d89030671c8001529198ca4b')
-       #    #    # cookie = str.encode(cookie)
-       #    #     nCookie = str.encode('Cookie')
-       #    #     flow.request.headers.set_all('Cookie', (nCookie,cookie))
-       #    # print('\n\n' + str(flow.request.headers) + '\n\n')
-
-
 
     def response(self, flow):
         url = flow.request.url
