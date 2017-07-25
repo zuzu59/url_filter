@@ -8,6 +8,7 @@ from version import __version__
 
 ORIG_URL = 'epfl.ch'
 TEST_URL = 'test-web-wordpress.epfl.ch'
+DEV_URL = 'dev-web-wordpress.epfl.ch'
 SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2', 'search-2']
 
 class Filter:
@@ -24,12 +25,11 @@ class Filter:
         if isText or url[-4:] == '.jsp':
             html = BeautifulSoup(flow.response.content, 'html.parser')
 
-            if not TEST_URL in url and html:
+            if not (TEST_URL in url and html) and not (DEV_URL in url and html):
                 self.remove_right_panel_color(html)
 
             # Modifications apportées aux nouvelles versions du site
-            if TEST_URL in url and html:
-
+            if (TEST_URL in url and html) or (DEV_URL in url and html):
 
                 # Enlever la barre additionelle inutile des réseaux sociaux
                 for div in html.findAll('div', {'class' : 'addtoany_share_save_container addtoany_content_top'}):
