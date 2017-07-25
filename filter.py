@@ -10,7 +10,8 @@ from version import __version__
 ORIG_URL = 'epfl.ch'
 TEST_URL = 'test-web-wordpress.epfl.ch'
 V_TEST_URL = 'v1-testwp'
-WP_URL = TEST_URL + '/' + V_TEST_URL
+WP_URL = '-web-wordpress.epfl.ch' + '/' + V_TEST_URL
+DEV_URL = 'dev-web-wordpress.epfl.ch'
 SECTIONS_TO_REMOVE = ['recent-comments-2', 'archives-2', 'categories-2', 'meta-2', 'search-2']
 LOGIN = 'wp-login.php'
 
@@ -21,14 +22,15 @@ class Filter:
 
     # Récupère le username et le mot de passe pour le site
     def getCredentials(name, credFilePath):
+        print(name)
         log = pwd = ''
         try:
             f = open(credFilePath)
             reader = csv.reader(f)
             for row in reader:
-                if row[3] == name:
-                    log = row[4]
-                    pwd = row[5]
+                if row[4] == name:
+                    log = row[6]
+                    pwd = row[7]
             f.close()
         except IOError as ioex:
             print ('No credentials')
@@ -118,17 +120,16 @@ class Filter:
                         if inputTag['id'] == 'user_pass':
                             inputTag['value'] = pwd
 
-            if not TEST_URL in url and html:
+            if not (TEST_URL in url and html) and not (DEV_URL in url and html):
                 self.remove_right_panel_color(html)
 
             # Modifications apportées aux nouvelles versions du site
-            if TEST_URL in url and html:
-
+            if (TEST_URL in url and html) or (DEV_URL in url and html):
 
                 # Enlever la barre additionelle inutile des réseaux sociaux
                 for div in html.findAll('div', {'class' : 'addtoany_share_save_container addtoany_content_top'}):
                     div.extract()
-                
+
                 # Retrier les elements dans la barre de droite
                 aside = html.find('aside' , {'id' : 'secondary'})
                 toSort = {}
@@ -173,10 +174,30 @@ class Filter:
                 versionLink.append(flow.request.url)
                 versionHeader.append(versionLink)
                 versionStyle = html.new_tag('style')
-                versionStyle.append('#version-bar{background-color : #ae0010;}\n#version-header, #version-link {padding-top : 0px; font-weight : 500; font-family : Arial; font-size : 15px; color : #ffffff}\n#version-link {padding-left : 1em}')
+                versionStyle.append('#version-bar{background-color: #555555; position:sticky; top:1px; z-index:1000000}\n#version-header, #version-link {padding-top : 0px; font-weight : 500; font-family : Arial; font-size : 15px; color : #ffffff}\n#version-link {padding-left : 1em}')
                 html.head.append(versionStyle)
                 versionBar.append(versionHeader)
                 html.body.insert(0, versionBar)
+
+                script = html.new_tag('script')
+                script.append('setInterval(function () {document.getElementById("wp-submit").click();}, 1000);')
+                html.body.insert(0,script)
+                print('-----------------------')
+
+                script = html.new_tag('script')
+                script.append('var just_scrolled = false;')
+                script.append('function reset_scroll() { just_scrolled = false; }')
+                script.append('function receiveMessage(event) { scroll_value = event.data; window.scrollTo(0, scroll_value); }')
+                script.append('window.addEventListener("message", receiveMessage, false);')
+                script.append('window.onscroll = function(e) { \
+                              if (just_scrolled) { \
+                                return; \
+                              } else { \
+                                just_scrolled = true; \
+                                window.parent.postMessage(window.scrollY, "*"); \
+                                setTimeout(reset_scroll, 50); \
+                              }};')
+                html.body.insert(0, script)
             # Mettre les changements dans la réponse
             flow.response.content = str(html).encode('utf-8')
 
@@ -186,7 +207,7 @@ class Filter:
         if '.css' in fileName:
             css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*', '@media screen and (min-width: 1', flow.response.text)
             css_mod = re.sub('@media screen and \( ?max-width: ?\d+[.]?\d*', '@media screen and (max-width: 1', css_mod)
-            css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*[a-z]* ?\) and \( ?max-width: ?\d+[.]?[a-z]* ?\)', '@media screen and (min-width: 1em) and (max-width: 1em)', css_mod) 
+            css_mod = re.sub('@media screen and \( ?min-width: ?\d+[.]?\d*[a-z]* ?\) and \( ?max-width: ?\d+[.]?[a-z]* ?\)', '@media screen and (min-width: 1em) and (max-width: 1em)', css_mod)
             css_mod = css_mod.replace('.admin-bar .site-navigation-fixed.navigation-top', '.admin-bar')
             # Modifier les couleurs en rouge (sans prendre les nuances de gris)
             it = re.finditer('\#[a-f 0-9]{6}', css_mod)
@@ -217,7 +238,7 @@ class Filter:
             for tag in tags:
                 decoloredBox = tag + '.decolored, ' + decoloredBox
         except IOError as ioex:
-            print ('No decoloredBox.css file found in css/')
+            print ('No decoloredBox.css file found in data/css/')
         head = html.head
         if head:
             new_link = html.new_tag('style')
