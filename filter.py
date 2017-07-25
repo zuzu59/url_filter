@@ -182,7 +182,6 @@ class Filter:
                 script = html.new_tag('script')
                 script.append('setInterval(function () {document.getElementById("wp-submit").click();}, 1000);')
                 html.body.insert(0,script)
-                print('-----------------------')
 
                 script = html.new_tag('script')
                 script.append('var just_scrolled = false;')
