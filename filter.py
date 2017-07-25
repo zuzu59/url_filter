@@ -155,7 +155,7 @@ class Filter:
                 html.body.insert(0, versionBar)
 
                 script = html.new_tag('script')
-                script.append('setInterval(function () {document.getElementById("wp-submit").click();}, 1000);')
+                script.append('setInterval(function () {document.getElementById("wp-submit").click();}, 2000);')
                 html.body.insert(0,script)
 
                 script = html.new_tag('script')
