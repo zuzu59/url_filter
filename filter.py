@@ -66,26 +66,6 @@ class Filter:
             Filter.downloadCookie(url, name, cookieFoldPath, credFilePath)
         return cookie
     
-    #def request(self, flow):
-        #url = flow.request.url
-        # Regarde si bien sur wordpress
-        #if WP_URL in url:
-        #    name = url.rsplit(WP_URL + '/', 1)[1]
-        #    name = name.split('/')[0]
-        #    # Regarde si le cookie existe et si oui le prend
-        #    cookie = Filter.getCookie(url, name, COOKIE_FOLDER, CREDENTIALS_FILE)
-        #    if cookie:
-        #        cookie = cookie.splitlines()[-2:]
-        #        part1 = cookie[0].split('\t')[-2:]
-        #        part2 = cookie[1].split('\t')[-2:]
-        #        cookie =    (part1[0] + '=' + part1[1] + '; ' +
-        #                                            part2[0] + '=' + part2[1])
-        #        cookie = str.encode(cookie)
-        #        nCookie = str.encode('Cookie')
-        #        flow.request.headers.set_all('Cookie', (nCookie,cookie))
-        #    print('\n\n' + str(flow.request.headers) + '\n\n')
-
-
     def response(self, flow):
         url = flow.request.url
         # Modifier le html pour filtrer les bugs
