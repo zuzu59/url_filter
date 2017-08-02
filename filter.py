@@ -18,7 +18,7 @@ LOGIN = 'wp-login.php'
 COOKIE_FOLDER = 'data/cookies'
 CREDENTIALS_FILE = '../credentials/credentials.csv'
 
-SCRIPT_SCROLL = 'data/Scripts/scroll.js'
+SCRIPT_PATH = 'data/Scripts/'
 
 class Filter:
 
@@ -154,7 +154,10 @@ class Filter:
             if html.body is not None and html.head is not None:
 
                 script = html.new_tag('script')
-                with open(SCRIPT_SCROLL, 'r') as myfile:
+                with open(SCRIPT_PATH+"autolog.js", 'r') as myfile:
+                    script.append(myfile.read());
+
+                with open(SCRIPT_PATH+"scroll.js", 'r') as myfile:
                     script.append(myfile.read());
                 html.head.insert(0, script)
 
