@@ -1,4 +1,8 @@
 function resizeIframe(e) {
+  var submitButton = document.getElementById("wp-submit");
+  if(submitButton)
+    submitButton.click();
+ 
   var body = document.body,
   html = document.documentElement;
 
