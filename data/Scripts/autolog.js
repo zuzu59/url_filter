@@ -1,0 +1,1 @@
+setTimeout(function () {document.getElementById("wp-submit").click();}, 500);
