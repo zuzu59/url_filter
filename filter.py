@@ -18,6 +18,8 @@ LOGIN = 'wp-login.php'
 COOKIE_FOLDER = 'data/cookies'
 CREDENTIALS_FILE = '../credentials/credentials.csv'
 
+SCRIPT_SCROLL = 'data/Scripts/scroll.js'
+
 class Filter:
 
     # Récupère le username et le mot de passe pour le site
@@ -137,37 +139,40 @@ class Filter:
                     div.extract()
 
             # Mettre la version du proxy en haut de la page
+            # 
+            #     versionBar = html.new_tag('div', id='version-bar')
+            #     versionHeader = html.new_tag('p1', id='version-header')
+            #     versionHeader.append("Ver: " + __version__)
+            #     versionLink = html.new_tag('a', id='version-link', href=flow.request.url)
+            #     versionLink.append(flow.request.url)
+            #     versionHeader.append(versionLink)
+            #     versionStyle = html.new_tag('style')
+            #     versionStyle.append('#version-bar{background-color: #555555; position:sticky; top:1px; z-index:1000000}\n#version-header, #version-link {padding-top : 0px; font-weight : 500; font-family : Arial; font-size : 15px; color : #ffffff}\n#version-link {padding-left : 1em}')
+            #     html.head.append(versionStyle)
+            #     versionBar.append(versionHeader)
+            #     html.body.insert(0, versionBar)
             if html.body is not None and html.head is not None:
-                versionBar = html.new_tag('div', id='version-bar')
-                versionHeader = html.new_tag('p1', id='version-header')
-                versionHeader.append("Ver: " + __version__)
-                versionLink = html.new_tag('a', id='version-link', href=flow.request.url)
-                versionLink.append(flow.request.url)
-                versionHeader.append(versionLink)
-                versionStyle = html.new_tag('style')
-                versionStyle.append('#version-bar{background-color: #555555; position:sticky; top:1px; z-index:1000000}\n#version-header, #version-link {padding-top : 0px; font-weight : 500; font-family : Arial; font-size : 15px; color : #ffffff}\n#version-link {padding-left : 1em}')
-                html.head.append(versionStyle)
-                versionBar.append(versionHeader)
-                html.body.insert(0, versionBar)
 
                 script = html.new_tag('script')
-                script.append('setTimeout(function () {document.getElementById("wp-submit").click();}, 500);')
-                html.body.insert(0,script)
+                with open(SCRIPT_SCROLL, 'r') as myfile:
+                    script.append(myfile.read());
+                html.head.insert(0, script)
 
-                script = html.new_tag('script')
-                script.append('var just_scrolled = false;')
-                script.append('function reset_scroll() { just_scrolled = false; }')
-                script.append('function receiveMessage(event) { scroll_value = event.data; window.scrollTo(0, scroll_value); }')
-                script.append('window.addEventListener("message", receiveMessage, false);')
-                script.append('window.onscroll = function(e) { \
-                              if (just_scrolled) { \
-                                return; \
-                              } else { \
-                                just_scrolled = true; \
-                                window.parent.postMessage(window.scrollY, "*"); \
-                                setTimeout(reset_scroll, 50); \
-                              }};')
-                html.body.insert(0, script)
+                vn0 = html.findAll('a', {'id' : 'versionNum'}); 
+                for a in vn0:
+                    a.append("Ver: " + __version__);
+
+                vf0 = html.findAll('p1', {'id' : 'version-header0'});
+                for versionHeader in vf0:
+                    versionHeader.append("Ver: " + __version__)
+                    versionLink = html.new_tag('a', id='version-link', href=flow.request.url)
+                    versionLink.append(flow.request.url)
+                    versionHeader.append(versionLink)
+
+                
+                
+                
+                
             # Mettre les changements dans la réponse
             flow.response.content = str(html).encode('utf-8')
 
